@@ -108,7 +108,7 @@ void menu::menuPrincipal()
     while(opcion!=8);
 }
 
-//INSERTAR CLIENTES(ARCHIVO PARA CLIENTES)
+//INSERTAR CLIENTES(ARCHIVO PARA CLIENTES) CLONADO EN MI PROYECTO
 void menu::altaCliente()
 {
     ofstream escritura;

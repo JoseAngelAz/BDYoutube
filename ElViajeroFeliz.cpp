@@ -19,6 +19,7 @@ class menu
 {
 private:
     float km_extra;
+    string testCodigo_cliente;
     //Cliente
     struct 
     {
@@ -26,17 +27,19 @@ private:
         string telefono;
         string correo;
         string NIT;
-        int CodigoCliente;
+        string CodigoCliente;
 
     } Cliente;
-    
+    //Array Renta
+    int Renta_Array[3] = {1,2,3};
     //Renta
      struct
     {
         string nombre_vehiculo;
         string tipo_vehiculo;
-        float precio;
-        float kilometros;        
+        string precio;
+        string kilometros;        
+        string Codigo_Renta;
     } Renta;
 
 public:
@@ -59,7 +62,7 @@ void menu::MenuPrincipal()
     int opcion;
     do
     {
-        string msg = "*** Registro de clientes de El Viajefo Feliz ***\n1. Dar de alta un cliente\n2. Mostrar detalles de un cliente\n3. Listar clientes\n4. Dar de baja un cliente\n5. Modificar un cliente\n6. Insertar Renta\n7. Eliminar Renta\n8. Salir\nOpci\242n: ";
+        string msg = "*** Registro de clientes de El Viajefo Feliz ***\n1. Insertar Cliente\n2. Insertar Renta\n3. Listar Clientes\n4. Modificar Cliente\n5. Eliminar Renta\n6. Salir\nOpci\242n:\n";
         cout<< msg;
         cin>>opcion;
         system(CLEAR);
@@ -155,7 +158,7 @@ if (escritura.is_open() && verificador.is_open())
     Cliente.CodigoCliente = Codigo_temp;
     cout<<"**Ingresar Cliente**\nIngresa el codigo del cliente";
     cout<< Cliente.CodigoCliente;
-    cout<<"\n"
+    cout<<"\n";
     fflush(stdin);
     cout<<"Ingresa el nombre del cliente: ";
     getline(cin,Cliente.CodigoCliente);
@@ -184,6 +187,158 @@ else{
 escritura.close();
 verificador.close();
 pausa();
+}
+
+//Insertar Rentas
+void menu::InsertarRentas(){
+ofstream escritura;
+ifstream verificador;
+string Codigo_temp;
+bool coincidencia = false;
+
+verificador.open("Rentas.txt",ios::in);
+escritura.open("Rentas.txt",ios::app);
+
+//validar que este abierta la escritura y verificador
+if (escritura.is_open() && verificador.is_open())
+{
+    /* code */
+    cout<<"***REGISTRAR RENTA DE AUTO***\nIngresa el codigo de la Renta: ";
+    getline(cin,Codigo_temp);
+    //validar el codigo 
+    if(Codigo_temp == "")
+    do{
+        cout<< "Codigo invalido, intentelo nuevamente: ";
+        getline(cin,Codigo_temp);
+    }
+    while (Codigo_temp == "");
+    //hace cuando
+    do{
+        verificador.seekg(0);
+        getline(verificador,Renta.Codigo_Renta);
+        while (!verificador.eof())
+        {
+            /* code */
+            getline(verificador, Renta.nombre_vehiculo);
+            getline(verificador, Renta.kilometros);
+            getline(verificador, Renta.precio);
+            getline(verificador, Renta.tipo_vehiculo);
+            //validar si es igual el codigo
+            if (Renta.Codigo_Renta == Codigo_temp)
+            {
+                /* code */
+                coincidencia = true;
+                cout<< "\nYa existe una Renta con ese codigo de Renta\nLa Renta con ese codigo es: "<<Renta.Codigo_Renta<<"\nIngrese un codigo valido";
+                getline(cin,Codigo_temp);
+                if(Codigo_temp == "")
+                    do{
+                        cout<<"Codigo de Renta invalido, intentelo nuevamente: ";
+                        getline(cin, Codigo_temp);
+                    }
+                    while(Codigo_temp == "");
+                break;
+            }
+            getline(verificador, Renta.Codigo_Renta);
+        }
+        if(verificador.eof() && Codigo_temp != Renta.Codigo_Renta)
+        coincidencia = false;
+        
+    }
+    while(coincidencia == true);
+    system(CLEAR);
+    Cliente.CodigoCliente = Codigo_temp;
+    cout<<"**Ingresar Renta**\nIngresa el codigo del Renta";
+    cout<< Renta.Codigo_Renta;
+    cout<<"\n";
+    fflush(stdin);
+    cout<<"Ingresa el nombre del vehiculo: ";
+    getline(cin,Renta.nombre_vehiculo);
+    cout<<"\n";
+    fflush(stdin);
+    cout<<"Ingresa el tipo de vehiculo: ";
+    getline(cin,Renta.tipo_vehiculo);
+    cout<<"\n";
+    fflush(stdin);
+    cout<<"Ingrea la cantidad de kilometros a rrecorrer: ";
+    getline(cin, Renta.kilometros);
+    cout<<"\n";
+    fflush(stdin);
+    cout<<"Ingresa el precio de la renta: ";
+    getline(cin,Renta.precio);
+    cout<<"\n";
+    fflush(stdin);
+    
+    //escribir los datos
+    escritura<<Renta.Codigo_Renta<<"\n"<<Renta.nombre_vehiculo<<"\n"<<Renta.tipo_vehiculo<<"\n"<<Renta.kilometros<<"\n"<<Renta.precio<<"\n";
+    cout<<"El registro se ha completado correctamente.\n";
+}
+else{
+    error();
+}
+//
+escritura.close();
+verificador.close();
+pausa();
+}
+//Buscar Clientes
+void menu::BuscarClientes(){
+	int i=0;
+    ifstream lectura;
+    lectura.open("Clientes.txt",ios::in);
+    if(lectura.is_open())
+    {
+        cout<<"***LISTA DE CLIENTES***\n";
+        getline(lectura,Cliente.CodigoCliente);
+        while(!lectura.eof())
+        {
+            i++;
+            getline(lectura,Cliente.nombre);
+            getline(lectura,Cliente.correo);
+            getline(lectura,Cliente.NIT);
+            getline(lectura,Cliente.telefono);
+            cout<<"C\242digo: "<<Cliente.CodigoCliente<<endl;
+            cout<<"Nombre: "<<Cliente.nombre<<endl;
+            cout<<"Correo: "<<Cliente.correo<<endl;
+            cout<<"Celular: "<<Cliente.telefono<<endl;
+            cout<<"NIT\n: "<<Cliente.NIT<<endl;            
+            getline(lectura,Cliente.CodigoCliente);
+        }
+        if(i==1)
+            cout<<"Hay un solo cliente registrado en El Viajero Feliz\n\n";
+        else
+            cout<<"Hay un total de "<<i<<" clientes registrados en El Viajero Feliz\n\n";
+    }
+    else
+    {
+        error();
+    }
+    lectura.close();
+    pausa();
+}
+
+//Modificar clientes
+void menu::ModificarClientes(){
+	ifstream lectura;
+    ifstream verificador;
+    ofstream auxiliar;
+    string auxCodigo;
+    string codigoModif;
+ 
+    //estructura auxiliar para el cliente
+    struct 
+    {
+        string nombre;
+        string telefono;
+        string correo;
+        string NIT;
+        string CodigoCliente;
+
+    } ClienteAuxiliar;
+}
+
+//Eliminar Rentas
+void menu::EliminarRentas(){
+	
 }
 
 //pausar el programa
