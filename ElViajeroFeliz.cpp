@@ -31,7 +31,7 @@ private:
 
     } Cliente;
     //Array Renta
-    int Renta_Array[3] = {1,2,3};
+    //int Renta_Array[3] = {1,2,3};
     //Renta
      struct
     {
@@ -321,7 +321,7 @@ void menu::ModificarClientes(){
 	ifstream lectura;
     ifstream verificador;
     ofstream auxiliar;
-    string auxCodigo;
+    string Codigo_temp;
     string codigoModif;
  
     //estructura auxiliar para el cliente
@@ -334,6 +334,169 @@ void menu::ModificarClientes(){
         string CodigoCliente;
 
     } ClienteAuxiliar;
+    //
+    bool encontrado=false;
+    bool coincidencia=false;
+    bool mismoCodigo=false;
+    lectura.open("Clientes.txt",ios::in);
+    verificador.open("Clientes.txt",ios::in);
+    auxiliar.open("Auxiliar.txt",ios::out);
+    cout<<"*** Modificar los datos de un cliente ***\n";
+    //abrimos los manejadores de archivos
+    if(lectura.is_open()&&verificador.is_open()&&auxiliar.is_open())
+    {/*
+    la función del fflush, realiza la limpieza del buffer de entrada (stdin) standar input. usualmente quedan almacenados algunos datos en el buffer sobre todo saltos de linea y espacio y se debería usar antes de cada scanf con el fin de garantizar que el buffer este limpio.
+    */
+        fflush(stdin);
+        cout<<"Ingresa el c\242digo del cliente que deseas modificar: ";
+        getline(cin,Codigo_temp);
+
+        if(Codigo_temp=="")
+        {
+            do
+            {
+                cout<<"c\242digo de cliente no v\240lido!, intentalo nuevamente: ";
+                getline(cin,Codigo_temp);
+            }
+            while(Codigo_temp=="");
+        }
+
+        codigoModif = Codigo_temp;
+
+        getline(lectura,Cliente.CodigoCliente);
+        while(!lectura.eof())
+        {
+            getline(lectura,Cliente.nombre);
+            getline(lectura,Cliente.NIT);
+            getline(lectura,Cliente.correo);
+            getline(lectura,Cliente.telefono);
+
+            if(Codigo_temp==Cliente.CodigoCliente)
+            {
+                encontrado = true;
+                mostarRegistro(codigoModif);
+
+                cout<<"**********************************************";
+                cout<<"\n\n";
+                cout<<"Ingresa la nueva informaci\242n para el cliente\n\n";
+                fflush(stdin);
+                cout<<"Ingresa el c\242digo del cliente: ";
+                getline(cin,Codigo_temp);
+                if(Codigo_temp==codigoModif)
+                {
+                    mismoCodigo=true;
+                }
+                if(mismoCodigo==false)
+                {
+                    do
+                    {
+                        if(Codigo_temp==codigoModif)
+                        {
+                            coincidencia=false;
+                            break;
+                        }
+                        verificador.seekg(0);
+                        getline(verificador,Cliente.CodigoCliente);
+                        while(!verificador.eof())
+                        {
+                            getline(verificador,Cliente.nombre);
+                            getline(verificador,Cliente.NIT);
+                            getline(verificador,Cliente.correo);
+                            getline(verificador,Cliente.telefono);
+
+                            if(Codigo_temp==Cliente.CodigoCliente)
+                            {
+                                coincidencia=true;
+                                cout<<"\n\nYa existe un cliente con ese c\242digo!\n\n";
+                                cout<<"El cliente con ese c\242digo es: "<<Cliente.nombre<<"\n\n";
+                                cout<<"Ingresa un c\242digo v\240lido!: ";
+                                getline(cin,Codigo_temp);
+
+                                if(Codigo_temp=="")
+                                {
+                                    do
+                                    {
+                                        cout<<"\nc\242digo de cliente no v\240lido!, ";
+                                        cout<<"intentalo nuevamente: ";
+                                        getline(cin,Codigo_temp);
+                                    }
+                                    while(Codigo_temp=="");
+                                }
+                                break;
+                            }
+
+                            getline(verificador,Cliente.CodigoCliente);
+                        }
+
+                        if(verificador.eof()&&Codigo_temp!=Cliente.CodigoCliente)
+                        {
+                            coincidencia=false;
+                        }
+
+                    }
+                    while(coincidencia==true);
+                }
+                system(CLEAR);
+                cout<<"***Modificar los datos de un cliente***\n\n";
+                cout<<"Ingresa el c\242digo del cliente que deseas modificar: ";
+                cout<<codigoModif;
+                mostarRegistro(codigoModif);
+                cout<<"**********************************************";
+                cout<<"\n\n";
+                cout<<"Ingresa la nueva informaci\242n para el cliente\n\n";
+                cout<<"Ingresa el c\242digo del cliente: ";
+                cout<<Codigo_temp;
+                cout<<"\n\n";
+                fflush(stdin);
+                cout<<"Ingresa el nombre del cliente: ";
+                getline(cin,ClienteAuxiliar.nombre);;
+                fflush(stdin);
+                cout<<"\n\n";
+                cout<<"Ingresa el domicilio del cliente: ";
+                getline(cin,ClienteAuxiliar.NIT);
+                cout<<"\n\n";
+                fflush(stdin);
+                cout<<"Ingresa el n\243mero de telefono del cliente: ";
+                getline(cin,ClienteAuxiliar.correo);
+                cout<<"\n\n";
+                fflush(stdin);
+                cout<<"Ingresa la fecha de inscripci\242n del cliente: ";
+                getline(cin,ClienteAuxiliar.telefono);
+                cout<<"\n\n";
+                auxiliar<<Codigo_temp<<"\n"<<ClienteAuxiliar.nombre<<"\n"<<ClienteAuxiliar.NIT<<"\n"<<ClienteAuxiliar.correo
+                        <<"\n"<<ClienteAuxiliar.telefono<<"\n";
+                cout<<"El Registro se ha modificado correctamente.\n\n";
+            }
+
+
+            else
+            {
+
+                auxiliar<<Cliente.CodigoCliente<<"\n"<<Cliente.nombre<<"\n"<<Cliente.NIT<<"\n"<<Cliente.correo
+                        <<"\n"<<Cliente.telefono<<"\n";
+            }
+
+
+            getline(lectura,Cliente.CodigoCliente);
+        }
+
+    }
+    else
+    {
+        error();
+    }
+
+    if(encontrado==false)
+    {
+        cout<<"\n\nNo se encontr\242 ning\243n registro con ese c\242digo!\n\n";
+    }
+    lectura.close();
+    verificador.close();
+    auxiliar.close();
+    remove("Clientes.txt");
+    rename("Auxiliar.txt","Clientes.txt");
+    pausa();
+
 }
 
 //Eliminar Rentas
@@ -351,7 +514,35 @@ void pausa(){
 void error(){
     cout<<"No se pudo abrir el archivo de registro\nasegurese que el archivo se encuente en la misma ubicacion que el\nprograma o que el archivo de texto se llame: Clientes.txt,\n si el archivo tiene otro nombre\ncambielo al mencionado anteriormente";
 }
+void menu::mostarRegistro(string codigo)
+{
 
+    ifstream mostrar;
+    mostrar.open("Clientes.txt",ios::in);
+    getline(mostrar,Cliente.CodigoCliente);
+    while(!mostrar.eof())
+    {
+        getline(mostrar,Cliente.nombre);
+        getline(mostrar,Cliente.NIT);
+        getline(mostrar,Cliente.correo);
+        getline(mostrar,Cliente.telefono);
+
+        if(codigo==Cliente.CodigoCliente)
+        {
+            cout<<"\n\nRegistro Encontrado\n\n";
+            cout<<"C\242digo: "<<Cliente.CodigoCliente<<endl;
+            cout<<"Nombre: "<<Cliente.nombre<<endl;
+            cout<<"Domicilio: "<<Cliente.NIT<<endl;
+            cout<<"Celular: "<<Cliente.correo<<endl;
+            cout<<"Fecha de inscripci\242n: "<<Cliente.telefono<<endl;
+            cout<<"\n\n";
+        }
+
+        getline(mostrar,Cliente.CodigoCliente);
+    }
+
+    mostrar.close();
+}
 //Metodo MAIN
 int main(){
     system("color f0");
