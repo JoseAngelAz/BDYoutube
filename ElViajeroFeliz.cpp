@@ -156,12 +156,12 @@ if (escritura.is_open() && verificador.is_open())
     while(coincidencia == true);
     system(CLEAR);
     Cliente.CodigoCliente = Codigo_temp;
-    cout<<"**Ingresar Cliente**\nIngresa el codigo del cliente";
+    cout<<"**INGREAR CLIENTES**\nIngresa el codigo del cliente";
     cout<< Cliente.CodigoCliente;
     cout<<"\n";
     fflush(stdin);
     cout<<"Ingresa el nombre del cliente: ";
-    getline(cin,Cliente.CodigoCliente);
+    getline(cin,Cliente.nombre);
     cout<<"\n";
     fflush(stdin);
     cout<<"Ingrea el NIT del cliente: ";
@@ -177,7 +177,7 @@ if (escritura.is_open() && verificador.is_open())
     cout<<"\n";
     fflush(stdin);
     //escribir los datos
-    escritura<<Cliente.CodigoCliente<<"\n"<<Cliente.nombre<<"\n"<<Cliente.NIT<<"\n"<<Cliente.telefono<<"\n"<<Cliente.correo<<"\n";
+    escritura<<Cliente.CodigoCliente<<"\n"<<Cliente.nombre<<"\n"<<Cliente.NIT<<"\n"<<Cliente.correo<<"\n"<<Cliente.telefono<<"\n";
     cout<<"El registro se ha completado correctamente.\n";
 }
 else{
